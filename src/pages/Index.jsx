@@ -1,4 +1,4 @@
-import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex, Input, InputGroup, InputLeftElement, Select, RangeSlider, RangeSliderTrack, RangeSliderFilledTrack, RangeSliderThumb } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaEnvelope, FaSearch } from "react-icons/fa";
 import { useState } from "react";
@@ -8,38 +8,59 @@ const sampleProducts = [
     id: 1,
     name: "Smartphone",
     image: "https://via.placeholder.com/150",
-    price: "$299",
+    price: 299,
+    category: "Smartphone",
+    brand: "Brand A",
   },
   {
     id: 2,
     name: "Laptop",
     image: "https://via.placeholder.com/150",
-    price: "$799",
+    price: 799,
+    category: "Laptop",
+    brand: "Brand B",
   },
   {
     id: 3,
     name: "Headphones",
     image: "https://via.placeholder.com/150",
-    price: "$199",
+    price: 199,
+    category: "Headphones",
+    brand: "Brand C",
   },
   {
     id: 4,
     name: "Smartwatch",
     image: "https://via.placeholder.com/150",
-    price: "$149",
+    price: 149,
+    category: "Smartwatch",
+    brand: "Brand A",
   },
 ];
 
+const categories = ["All", "Smartphone", "Laptop", "Headphones", "Smartwatch"];
+const brands = ["All", "Brand A", "Brand B", "Brand C"];
+
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]);
+  const [brandFilter, setBrandFilter] = useState("");
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const filteredProducts = sampleProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery)
-  );
+  const handleCategoryChange = (event) => setCategoryFilter(event.target.value);
+  const handlePriceRangeChange = (event) => setPriceRangeFilter([event[0], event[1]]);
+  const handleBrandChange = (event) => setBrandFilter(event.target.value);
+
+  const filteredProducts = sampleProducts.filter((product) => {
+    const matchesCategory = categoryFilter === "All" || product.category === categoryFilter;
+    const matchesPriceRange = product.price >= priceRangeFilter[0] && product.price <= priceRangeFilter[1];
+    const matchesBrand = brandFilter === "All" || product.brand === brandFilter;
+    return matchesCategory && matchesPriceRange && matchesBrand;
+  });
 
   return (
     <Box>
@@ -74,6 +95,41 @@ const Index = () => {
           <Heading as="h1" size="2xl">Welcome to Our Electronics Store</Heading>
           <Text fontSize="lg">Discover the latest in electronic & smart appliance technology.</Text>
         </VStack>
+
+        <Flex direction={{ base: "column", md: "row" }} justify="space-between" mb={10}>
+          <Box>
+            <Text>Category</Text>
+            <Select value={categoryFilter} onChange={handleCategoryChange}>
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </Select>
+          </Box>
+          <Box>
+            <Text>Price Range</Text>
+            <RangeSlider
+              defaultValue={[0, 1000]}
+              min={0}
+              max={1000}
+              step={50}
+              onChangeEnd={handlePriceRangeChange}
+            >
+              <RangeSliderTrack>
+                <RangeSliderFilledTrack />
+              </RangeSliderTrack>
+              <RangeSliderThumb index={0} />
+              <RangeSliderThumb index={1} />
+            </RangeSlider>
+          </Box>
+          <Box>
+            <Text>Brand</Text>
+            <Select value={brandFilter} onChange={handleBrandChange}>
+              {brands.map((brand) => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </Select>
+          </Box>
+        </Flex>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10} mt={10}>
           {filteredProducts.map((product) => (
