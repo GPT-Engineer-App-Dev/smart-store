@@ -1,4 +1,4 @@
-import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex, Input, InputGroup, InputLeftElement, Select, RangeSlider, RangeSliderTrack, RangeSliderFilledTrack, RangeSliderThumb } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaEnvelope, FaSearch } from "react-icons/fa";
 import { useState } from "react";
