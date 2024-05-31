@@ -1,6 +1,7 @@
-import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex } from "@chakra-ui/react";
+import { Box, Container, VStack, Text, Image, SimpleGrid, Heading, Link, Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { FaHome, FaBoxOpen, FaEnvelope } from "react-icons/fa";
+import { FaHome, FaBoxOpen, FaEnvelope, FaSearch } from "react-icons/fa";
+import { useState } from "react";
 
 const sampleProducts = [
   {
@@ -30,6 +31,16 @@ const sampleProducts = [
 ];
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredProducts = sampleProducts.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery)
+  );
+
   return (
     <Box>
       <Flex as="nav" bg="blue.500" color="white" padding="1.5rem" justifyContent="space-around">
@@ -45,6 +56,17 @@ const Index = () => {
           <FaEnvelope />
           <Text marginLeft="0.5rem">Contact Us</Text>
         </Link>
+        <InputGroup maxW="400px" mx="auto">
+          <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
+          <Input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            bg="white"
+            color="black"
+          />
+        </InputGroup>
       </Flex>
 
       <Container maxW="container.xl" centerContent>
@@ -54,7 +76,7 @@ const Index = () => {
         </VStack>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10} mt={10}>
-          {sampleProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <Box key={product.id} borderWidth="1px" borderRadius="lg" overflow="hidden" textAlign="center">
               <Image src={product.image} alt={product.name} />
               <Box p="6">
